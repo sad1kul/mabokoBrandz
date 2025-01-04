@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faShoppingCart, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faShoppingCart, faChevronLeft, faChevronRight, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { RootState } from '../store';
 import { addToCart } from '../store/slices/cartSlice';
 import { useDispatch } from 'react-redux';
@@ -12,6 +12,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   const product = useSelector((state: RootState) =>
     state.products.items.find(p => p.id === id)
@@ -116,7 +117,7 @@ export default function ProductDetail() {
         <div>
           <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
           <p className="text-2xl text-blue-600 font-bold mb-4">
-            ${product.price}
+            R {product.price}
           </p>
           <div className="prose max-w-none mb-6">
             <p>{product.description}</p>

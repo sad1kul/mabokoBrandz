@@ -35,7 +35,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.description}
           </p>
           <div className="flex items-center justify-between">
-            <span className="text-lg font-bold">${product.price}</span>
+            <span className="text-lg font-bold">R {product.price}</span>
             <button
               onClick={handleAddToCart}
               className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors duration-300"

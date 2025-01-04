@@ -16,8 +16,16 @@ export default function Header() {
     <header className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="font-bold text-xl text-gray-800">
-            ModernShop
+          <Link to="/" className="flex items-center">
+            <img
+              src=""
+              alt=""
+              className="h-10"
+              style={{
+                objectFit: 'contain',
+                maxWidth: '150px'
+              }}
+            />
           </Link>
 
           <div className="flex-1 max-w-lg mx-8">

@@ -82,7 +82,7 @@ export default function Cart() {
                 />
                 <div className="flex-grow ml-4">
                   <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-gray-600 text-sm">${item.price}</p>
+                  <p className="text-gray-600 text-sm">R {item.price}</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <button
@@ -134,7 +134,7 @@ export default function Cart() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span>R {cartTotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
@@ -143,7 +143,7 @@ export default function Cart() {
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>R {cartTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>

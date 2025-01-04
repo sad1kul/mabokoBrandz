@@ -43,9 +43,11 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
-      <div className="bg-blue-600 text-white rounded-lg p-8 mb-8">
-        <h1 className="text-4xl font-bold mb-4">Welcome to ModernShop</h1>
-        <p className="text-xl mb-4">Discover amazing products at great prices</p>
+      <div className="bg-blue-600 text-white py-12 px-4 sm:px-6 lg:px-8 rounded-lg mb-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold mb-4">Welcome to Maboko Brandz</h1>
+          <p className="text-xl">Discover amazing products at great prices</p>
+        </div>
       </div>
 
       {/* Filters */}
@@ -105,7 +107,7 @@ export default function Home() {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-xl font-bold text-blue-600">
-                    ${product.price}
+                    R {product.price.toFixed(2)}
                   </span>
                   <button
                     className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
