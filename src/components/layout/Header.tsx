@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { ShoppingCart, User, Search } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart, faUser, faSearch } from '@fortawesome/free-solid-svg-icons';
 import type { RootState } from '../../store';
 
 export default function Header() {
@@ -25,7 +26,9 @@ export default function Header() {
                 placeholder="Search products..."
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+              <span className="absolute right-3 top-2.5">
+                <FontAwesomeIcon icon={faSearch} className="w-5 h-5 text-gray-400" />
+              </span>
             </div>
           </div>
 
@@ -34,7 +37,7 @@ export default function Header() {
               to="/cart"
               className="relative p-2 text-gray-600 hover:text-gray-900"
             >
-              <ShoppingCart className="h-6 w-6" />
+              <FontAwesomeIcon icon={faShoppingCart} className="w-6 h-6" />
               {cartItemsCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {cartItemsCount}
@@ -47,7 +50,7 @@ export default function Header() {
                 to="/account"
                 className="p-2 text-gray-600 hover:text-gray-900"
               >
-                <User className="h-6 w-6" />
+                <FontAwesomeIcon icon={faUser} className="w-6 h-6" />
               </Link>
             ) : (
               <Link

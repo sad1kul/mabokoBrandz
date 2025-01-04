@@ -1,66 +1,86 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { Product } from '../../types';
+import { Product } from '../../types/product';
+
+// Dummy products data
+const initialProducts: Product[] = [
+  {
+    id: '1',
+    name: 'Wireless Headphones',
+    description: 'High-quality wireless headphones with noise cancellation',
+    price: 199.99,
+    image: 'https://via.placeholder.com/300',
+    category: 'Electronics',
+    stock: 50,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '2',
+    name: 'Smart Watch',
+    description: 'Feature-rich smartwatch with health tracking',
+    price: 299.99,
+    image: 'https://via.placeholder.com/300',
+    category: 'Electronics',
+    stock: 30,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '3',
+    name: 'Laptop Backpack',
+    description: 'Durable laptop backpack with multiple compartments',
+    price: 79.99,
+    image: 'https://via.placeholder.com/300',
+    category: 'Accessories',
+    stock: 100,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
 
 interface ProductsState {
   items: Product[];
-  filteredItems: Product[];
-  isLoading: boolean;
+  loading: boolean;
   error: string | null;
-  filters: {
-    category: string | null;
-    minPrice: number | null;
-    maxPrice: number | null;
-    inStock: boolean;
-  };
 }
 
 const initialState: ProductsState = {
-  items: [],
-  filteredItems: [],
-  isLoading: false,
+  items: initialProducts,
+  loading: false,
   error: null,
-  filters: {
-    category: null,
-    minPrice: null,
-    maxPrice: null,
-    inStock: false,
-  },
 };
 
 const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    setProducts: (state, action: PayloadAction<Product[]>) => {
-      state.items = action.payload;
-      state.filteredItems = action.payload;
+    addProduct: (state, action: PayloadAction<Product>) => {
+      state.items.push(action.payload);
+    },
+    updateProduct: (state, action: PayloadAction<Product>) => {
+      const index = state.items.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state.items[index] = action.payload;
+      }
+    },
+    removeProduct: (state, action: PayloadAction<string>) => {
+      state.items = state.items.filter(item => item.id !== action.payload);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
+      state.loading = action.payload;
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    setFilters: (
-      state,
-      action: PayloadAction<Partial<ProductsState['filters']>>
-    ) => {
-      state.filters = { ...state.filters, ...action.payload };
-      // Apply filters
-      state.filteredItems = state.items.filter((product) => {
-        const categoryMatch =
-          !state.filters.category || product.category === state.filters.category;
-        const priceMatch =
-          (!state.filters.minPrice ||
-            product.price >= state.filters.minPrice) &&
-          (!state.filters.maxPrice || product.price <= state.filters.maxPrice);
-        const stockMatch = !state.filters.inStock || product.stock > 0;
-        return categoryMatch && priceMatch && stockMatch;
-      });
-    },
   },
 });
 
-export const { setProducts, setLoading, setError, setFilters } =
-  productsSlice.actions;
+export const {
+  addProduct,
+  updateProduct,
+  removeProduct,
+  setLoading,
+  setError,
+} = productsSlice.actions;
+
 export default productsSlice.reducer;

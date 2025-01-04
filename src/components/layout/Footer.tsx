@@ -1,13 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Mail,
-  Phone,
-  MapPin,
-} from 'lucide-react';
+  faEnvelope,
+  faPhone,
+  faMapMarkerAlt,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  faFacebook,
+  faTwitter,
+  faInstagram,
+} from '@fortawesome/free-brands-svg-icons';
 
 export default function Footer() {
   return (
@@ -47,15 +50,15 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2">
               <li className="flex items-center text-gray-400">
-                <Mail className="h-5 w-5 mr-2" />
+                <FontAwesomeIcon icon={faEnvelope} className="w-5 h-5 mr-2" />
                 support@modernshop.com
               </li>
               <li className="flex items-center text-gray-400">
-                <Phone className="h-5 w-5 mr-2" />
+                <FontAwesomeIcon icon={faPhone} className="w-5 h-5 mr-2" />
                 +1 (555) 123-4567
               </li>
               <li className="flex items-center text-gray-400">
-                <MapPin className="h-5 w-5 mr-2" />
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="w-5 h-5 mr-2" />
                 123 Shop Street, City, Country
               </li>
             </ul>
@@ -69,21 +72,21 @@ export default function Footer() {
                 className="text-gray-400 hover:text-white"
                 aria-label="Facebook"
               >
-                <Facebook className="h-6 w-6" />
+                <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
               </a>
               <a
                 href="#"
                 className="text-gray-400 hover:text-white"
                 aria-label="Twitter"
               >
-                <Twitter className="h-6 w-6" />
+                <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
               </a>
               <a
                 href="#"
                 className="text-gray-400 hover:text-white"
                 aria-label="Instagram"
               >
-                <Instagram className="h-6 w-6" />
+                <FontAwesomeIcon icon={faInstagram} className="w-6 h-6" />
               </a>
             </div>
           </div>
