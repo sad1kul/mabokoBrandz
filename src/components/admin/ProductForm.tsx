@@ -1,136 +1,154 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Upload, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Product, ProductImage } from '../../types/product';
+import { addProduct, updateProduct } from '../../store/slices/productsSlice';
+import ImageUpload from './ImageUpload';
 
-const schema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  price: z.number().positive('Price must be positive'),
-  category: z.string().min(1, 'Category is required'),
-  stock: z.number().int().min(0, 'Stock cannot be negative'),
-  images: z.array(z.instanceof(File)).min(1, 'At least one image is required'),
-});
+interface ProductFormProps {
+  product?: Product;
+  onClose: () => void;
+}
 
-type ProductFormData = z.infer<typeof schema>;
-
-export default function ProductForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<ProductFormData>({
-    resolver: zodResolver(schema),
+export default function ProductForm({ product, onClose }: ProductFormProps) {
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>>({
+    name: product?.name || '',
+    description: product?.description || '',
+    price: product?.price || 0,
+    category: product?.category || '',
+    stock: product?.stock || 0,
+    images: product?.images || [],
   });
 
-  const onSubmit = async (data: ProductFormData) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === 'images') {
-        Array.from(value).forEach((file) => {
-          formData.append('images', file);
-        });
-      } else {
-        formData.append(key, value.toString());
-      }
-    });
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const timestamp = new Date().toISOString();
+    const productData: Product = {
+      id: product?.id || `product-${Date.now()}`,
+      ...formData,
+      createdAt: product?.createdAt || timestamp,
+      updatedAt: timestamp,
+    };
 
-    try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) throw new Error('Failed to create product');
-      // Handle success
-    } catch (error) {
-      // Handle error
+    if (product) {
+      dispatch(updateProduct(productData));
+    } else {
+      dispatch(addProduct(productData));
     }
+    onClose();
+  };
+
+  const handleImagesChange = (newImages: ProductImage[]) => {
+    setFormData(prev => ({ ...prev, images: newImages }));
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-2xl mx-auto p-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700">Title</label>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          Product Name
+        </label>
         <input
           type="text"
-          {...register('title')}
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          required
         />
-        {errors.title && (
-          <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
-        )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
           Description
         </label>
         <textarea
-          {...register('description')}
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           rows={4}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          required
         />
-        {errors.description && (
-          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
-        )}
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Price</label>
+          <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+            Price
+          </label>
           <input
             type="number"
+            id="price"
+            value={formData.price}
+            onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
+            min="0"
             step="0.01"
-            {...register('price', { valueAsNumber: true })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            required
           />
-          {errors.price && (
-            <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
-          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Stock</label>
+          <label htmlFor="stock" className="block text-sm font-medium text-gray-700">
+            Stock
+          </label>
           <input
             type="number"
-            {...register('stock', { valueAsNumber: true })}
+            id="stock"
+            value={formData.stock}
+            onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) }))}
+            min="0"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            required
           />
-          {errors.stock && (
-            <p className="mt-1 text-sm text-red-600">{errors.stock.message}</p>
-          )}
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Images</label>
-        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-          <div className="space-y-1 text-center">
-            <Upload className="mx-auto h-12 w-12 text-gray-400" />
-            <div className="flex text-sm text-gray-600">
-              <label className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                <span>Upload files</span>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  {...register('images')}
-                  className="sr-only"
-                />
-              </label>
-              <p className="pl-1">or drag and drop</p>
-            </div>
-            <p className="text-xs text-gray-500">PNG, JPG, WEBP up to 10MB</p>
-          </div>
-        </div>
-        {errors.images && (
-          <p className="mt-1 text-sm text-red-600">{errors.images.message}</p>
-        )}
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+          Category
+        </label>
+        <input
+          type="text"
+          id="category"
+          value={formData.category}
+          onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          required
+        />
       </div>
 
-      <button
-        type="submit"
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        Create Product
-      </button>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Product Images
+        </label>
+        <ImageUpload
+          images={formData.images}
+          onImagesChange={handleImagesChange}
+        />
+      </div>
+
+      <div className="flex justify-end space-x-4">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <FontAwesomeIcon icon={faTimes} className="mr-2" />
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <FontAwesomeIcon icon={faSave} className="mr-2" />
+          {product ? 'Update' : 'Create'} Product
+        </button>
+      </div>
     </form>
   );
 }

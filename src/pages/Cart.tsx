@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrash,
@@ -19,7 +19,6 @@ import {
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const cartTotal = useSelector((state: { cart: RootState['cart'] }) =>
     selectCartTotal(state)
@@ -37,11 +36,6 @@ export default function Cart() {
     if (window.confirm('Are you sure you want to clear your cart?')) {
       dispatch(clearCart());
     }
-  };
-
-  const handleCheckout = () => {
-    // TODO: Implement checkout functionality
-    navigate('/checkout');
   };
 
   if (cartItems.length === 0) {
@@ -82,7 +76,7 @@ export default function Cart() {
                 className="flex items-center p-4 border-b border-gray-200 last:border-b-0"
               >
                 <img
-                  src={item.image}
+                  src={item.images.find(img => img.isFeatured)?.url || item.images[0]?.url}
                   alt={item.name}
                   className="w-20 h-20 object-cover rounded"
                 />
@@ -153,12 +147,12 @@ export default function Cart() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={handleCheckout}
-              className="w-full mt-6 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300"
+            <Link
+              to="/checkout"
+              className="w-full mt-6 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300 inline-block text-center"
             >
               Proceed to Checkout
-            </button>
+            </Link>
             <Link
               to="/"
               className="block text-center mt-4 text-blue-600 hover:text-blue-800"

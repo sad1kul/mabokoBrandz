@@ -5,6 +5,7 @@ import { faShoppingCart, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { RootState } from '../store';
 import { addToCart } from '../store/slices/cartSlice';
 import { Product } from '../types/product';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -91,42 +92,47 @@ export default function Home() {
             key={product.id}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
           >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-              <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                {product.description}
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="text-xl font-bold text-blue-600">
-                  ${product.price}
-                </span>
-                <button
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => handleAddToCart(product)}
-                  disabled={product.stock === 0}
-                  aria-label={`Add ${product.name} to cart`}
-                >
-                  <FontAwesomeIcon icon={faShoppingCart} />
-                  <span>
-                    {getCartItemQuantity(product.id) > 0
-                      ? `In Cart (${getCartItemQuantity(product.id)})`
-                      : 'Add to Cart'}
+            <Link to={`/product/${product.id}`} className="block">
+              <img
+                src={product.images.find(img => img.isFeatured)?.url || product.images[0]?.url}
+                alt={product.name}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                  {product.description}
+                </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-xl font-bold text-blue-600">
+                    ${product.price}
                   </span>
-                </button>
+                  <button
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleAddToCart(product);
+                    }}
+                    disabled={product.stock === 0}
+                    aria-label={`Add ${product.name} to cart`}
+                  >
+                    <FontAwesomeIcon icon={faShoppingCart} />
+                    <span>
+                      {getCartItemQuantity(product.id) > 0
+                        ? `In Cart (${getCartItemQuantity(product.id)})`
+                        : 'Add to Cart'}
+                    </span>
+                  </button>
+                </div>
+                <div className="mt-2 text-sm text-gray-500">
+                  {product.stock > 0 ? (
+                    <span className="text-green-600">{product.stock} in stock</span>
+                  ) : (
+                    <span className="text-red-600">Out of stock</span>
+                  )}
+                </div>
               </div>
-              <div className="mt-2 text-sm text-gray-500">
-                {product.stock > 0 ? (
-                  <span className="text-green-600">{product.stock} in stock</span>
-                ) : (
-                  <span className="text-red-600">Out of stock</span>
-                )}
-              </div>
-            </div>
+            </Link>
           </div>
         ))}
       </div>
