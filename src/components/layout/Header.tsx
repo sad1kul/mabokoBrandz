@@ -4,12 +4,13 @@ import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faUser, faSearch } from '@fortawesome/free-solid-svg-icons';
 import type { RootState } from '../../store';
+import { selectCartItemsCount } from '../../store/slices/cartSlice';
 
 export default function Header() {
   const { user } = useSelector((state: RootState) => state.auth);
-  const { items } = useSelector((state: RootState) => state.cart);
-
-  const cartItemsCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const cartItemsCount = useSelector((state: { cart: RootState['cart'] }) =>
+    selectCartItemsCount(state)
+  );
 
   return (
     <header className="bg-white shadow-md">
@@ -36,6 +37,7 @@ export default function Header() {
             <Link
               to="/cart"
               className="relative p-2 text-gray-600 hover:text-gray-900"
+              aria-label={`Shopping cart with ${cartItemsCount} items`}
             >
               <FontAwesomeIcon icon={faShoppingCart} className="w-6 h-6" />
               {cartItemsCount > 0 && (
@@ -47,14 +49,15 @@ export default function Header() {
 
             {user ? (
               <Link
-                to="/account"
+                to="/admin/dashboard"
                 className="p-2 text-gray-600 hover:text-gray-900"
+                aria-label="Admin dashboard"
               >
                 <FontAwesomeIcon icon={faUser} className="w-6 h-6" />
               </Link>
             ) : (
               <Link
-                to="/login"
+                to="/admin/login"
                 className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
               >
                 Sign In
